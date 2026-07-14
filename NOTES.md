@@ -230,3 +230,323 @@ Images become ready for CNN training
 - Reduces the chance of training errors.
 - Automatically prepares thousands of images for AI.
 - Makes the training process faster and more reliable.
+
+# 📚 Day 4 Notes – Building the AI Model
+
+---
+
+# 1. Transfer Learning
+
+Transfer Learning is a machine learning technique where a pretrained model is reused for a new task instead of training a neural network from scratch.
+
+Instead of learning basic image features again, the model uses the knowledge it already gained from millions of images and learns only the new classes.
+
+### Advantages
+- Faster training
+- Better accuracy
+- Requires fewer images
+- Reduces overfitting
+- Saves computational resources
+
+---
+
+# 2. MobileNetV2
+
+MobileNetV2 is a lightweight Convolutional Neural Network (CNN) developed by Google.
+
+It is already trained on the ImageNet dataset and is widely used for image classification projects because it is fast and efficient.
+
+In RoseGuardianAI, MobileNetV2 is used as the feature extractor.
+
+```python
+base_model = MobileNetV2(
+    weights="imagenet",
+    include_top=False,
+    input_shape=(224,224,3)
+)
+```
+
+---
+
+# 3. ImageNet
+
+ImageNet is one of the world's largest image datasets.
+
+It contains:
+- Over 1 million images
+- Around 1000 different classes
+
+MobileNetV2 has already learned general image features from this dataset.
+
+---
+
+# 4. include_top=False
+
+The original MobileNetV2 model ends with a classifier that predicts 1000 ImageNet classes.
+
+Since RoseGuardianAI only predicts 3 classes, we remove that classifier.
+
+```python
+include_top=False
+```
+
+This allows us to create our own custom classifier.
+
+---
+
+# 5. Freezing the Base Model
+
+```python
+base_model.trainable = False
+```
+
+Freezing means the pretrained MobileNetV2 weights will not change during training.
+
+Only the newly added classifier will learn from our rose dataset.
+
+Benefits:
+- Faster training
+- Prevents destroying pretrained knowledge
+- Better performance on smaller datasets
+
+---
+
+# 6. Sequential Model
+
+Sequential is the simplest way to build a neural network by stacking layers one after another.
+
+Example:
+
+Input Image
+↓
+
+MobileNetV2
+↓
+
+GlobalAveragePooling2D
+↓
+
+Dense Layer
+↓
+
+Dropout
+↓
+
+Output Layer
+
+---
+
+# 7. GlobalAveragePooling2D
+
+Converts large feature maps into a compact feature vector.
+
+Benefits:
+- Reduces the number of parameters
+- Prevents overfitting
+- Makes the model more efficient
+
+---
+
+# 8. Dense Layer
+
+Dense is a fully connected neural network layer.
+
+It learns patterns from the extracted features.
+
+Example:
+
+```python
+Dense(256, activation="relu")
+```
+
+256 neurons are used for learning.
+
+---
+
+# 9. ReLU Activation Function
+
+ReLU stands for Rectified Linear Unit.
+
+Formula:
+
+f(x) = max(0, x)
+
+Advantages:
+- Fast computation
+- Solves vanishing gradient problems
+- Most commonly used hidden layer activation
+
+---
+
+# 10. Dropout Layer
+
+```python
+Dropout(0.5)
+```
+
+Dropout randomly disables 50% of neurons during training.
+
+Purpose:
+- Prevents overfitting
+- Improves generalization
+- Makes the model more robust
+
+---
+
+# 11. Softmax Activation
+
+Softmax converts the final outputs into probabilities.
+
+Example:
+
+Healthy Leaf = 97%
+
+Rose Rust = 2%
+
+Sawfly = 1%
+
+The class with the highest probability becomes the prediction.
+
+---
+
+# 12. Model Compilation
+
+Before training, the model must be compiled.
+
+```python
+model.compile(
+    optimizer=Adam(learning_rate=0.001),
+    loss="categorical_crossentropy",
+    metrics=["accuracy"]
+)
+```
+
+Compilation defines:
+- Optimizer
+- Loss Function
+- Evaluation Metric
+
+---
+
+# 13. Adam Optimizer
+
+Adam is one of the most popular optimization algorithms.
+
+Purpose:
+- Updates model weights
+- Helps the model learn efficiently
+- Provides faster convergence
+
+Learning Rate Used:
+
+0.001
+
+---
+
+# 14. Loss Function
+
+Loss measures how wrong the model's prediction is.
+
+For multi-class classification we use:
+
+```python
+categorical_crossentropy
+```
+
+Goal:
+
+Lower Loss = Better Model
+
+---
+
+# 15. Accuracy
+
+Accuracy measures the percentage of correct predictions.
+
+Example:
+
+100 Images Tested
+
+95 Correct Predictions
+
+Accuracy = 95%
+
+---
+
+# 16. Model Summary
+
+The Model Summary displays:
+
+- Model Architecture
+- Layer Names
+- Output Shapes
+- Number of Parameters
+- Trainable Parameters
+- Non-Trainable Parameters
+
+Our Model Summary:
+
+Total Parameters:
+2,586,691
+
+Trainable Parameters:
+328,707
+
+Non-Trainable Parameters:
+2,257,984
+
+---
+
+# 17. RoseGuardianAI Model Architecture
+
+Input Image (224 × 224 × 3)
+
+↓
+
+MobileNetV2 (Feature Extraction)
+
+↓
+
+GlobalAveragePooling2D
+
+↓
+
+Dense (256, ReLU)
+
+↓
+
+Dropout (0.5)
+
+↓
+
+Dense (3, Softmax)
+
+↓
+
+Prediction
+
+Healthy Leaf
+
+Rose Rust
+
+Sawfly Damage
+
+---
+
+# Key Learnings
+
+✅ Learned Transfer Learning
+
+✅ Used MobileNetV2 as a pretrained model
+
+✅ Froze pretrained layers
+
+✅ Built a custom classifier
+
+✅ Compiled the model
+
+✅ Understood Optimizer, Loss and Accuracy
+
+✅ Successfully generated the model summary
+
+✅ Model is now ready for training
