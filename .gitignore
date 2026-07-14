@@ -1,0 +1,22 @@
+# Virtual Environment
+.venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# VS Code Settings
+.vscode/
+
+# Uploaded Images
+uploads/*
+
+# Trained AI Models
+models/*.keras
+models/*.h5
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+# Dataset
+dataset/
